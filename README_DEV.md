@@ -11,22 +11,20 @@
 | สมาชิก | รับผิดชอบ | ไฟล์ที่แตะ |
 |---|---|---|
 | **A — Core** | สูตรคำนวณภาษีขั้นบันได, ค่าลดหย่อน, เพดาน | `config.py`, `core/calculator.py`, `core/deduction.py` |
-| **B — Data** | บันทึก/โหลด JSON, CRUD, ส่งออกใบสรุป, ตรวจเลขบัตร | `io_utils/storage.py`, `core/validator.py` |
+| **B — Data** | บันทึก/โหลด .txt, ส่งออกใบสรุป, ตรวจเลขบัตร | `io_utils/storage.py`, `core/validator.py` |
 | **C — UI** | เมนูหลัก, รับ input, ตารางแสดงผล, กราฟ ASCII | `main.py`, `io_utils/display.py` |
-| **D — Extras + QA** | เกม/ควิซ, โหมดเปรียบเทียบ, ทดสอบทุกโมดูล, เอกสาร | `extras/`, `docs/`, ไฟล์ทดสอบ |
+| **D — Extras + QA** | เกม/ควิซ, โหมดเปรียบเทียบ, ทดสอบทุกโมดูล, เอกสาร | `extras/`, ไฟล์ทดสอบ |
 
 กฎสำคัญ: **โมดูลใน `core/` ห้ามมี `print()` หรือ `input()` เด็ดขาด** ทำหน้าที่รับค่าเข้า-คืนค่าออกเท่านั้น การติดต่อผู้ใช้ทั้งหมดอยู่ที่ `main.py` และ `io_utils/display.py`
 
 ## 2. การตั้งค่าโปรเจกต์
 
 ```bash
-git clone <repository-url>
+git clone <https://github.com/123456789i0/tax_system.git>
 cd tax_system
 git checkout -b dev-<ชื่อของคุณ>   # เช่น dev-a, dev-b
 python main.py                     # รันทดสอบ
 ```
-
-แผนการทำงานและกฎกลางระดับโครงการ ดูที่ [`PROJECT_PLAN.md`](./PROJECT_PLAN.md)
 
 ### กติกา Git
 
@@ -53,7 +51,7 @@ python main.py                     # รันทดสอบ
 | ฟังก์ชัน | รับเข้า | คืนค่า |
 |---|---|---|
 | `validate_id(id_card)` | เลขบัตร (`str`) | `True` / `False` |
-| `save_taxpayer(profile)` | โปรไฟล์ (`dict`) | สำเร็จหรือไม่ (`bool`) |
+| `save_ taxpayer(profile)` |โปรไฟล์ (`dict`) | สำเร็จหรือไม่ (`bool`) |
 | `load_all()` | ไม่มี | `list` ของ `dict` |
 | `find_taxpayer(id_card)` | เลขบัตร (`str`) | `dict` หรือ `None` |
 | `delete_taxpayer(id_card)` | เลขบัตร (`str`) | สำเร็จหรือไม่ (`bool`) |
@@ -247,8 +245,7 @@ TAX_BRACKETS = (
 - ต้องมี `find_taxpayer(id_card) -> dict | None`
 - ต้องมี `delete_taxpayer(id_card) -> bool`
 - ต้องมี `export_summary(profile, tax) -> str` สร้างไฟล์สรุปและคืนชื่อไฟล์
-- ต้องใช้รูปแบบข้อมูลที่อ่านกลับได้อย่างสม่ำเสมอ โดยแนะนำ JSON แม้ไฟล์ข้อมูลเริ่มต้นจะเป็น `.txt`
-- ต้องจัดการไฟล์ไม่มีอยู่ ไฟล์ว่าง และ JSON เสียหายโดยไม่ทำให้โปรแกรมหลัก crash
+- ต้องใช้รูปแบบข้อมูลที่อ่านกลับได้อย่างสม่ำเสมอ `.txt`
 - ต้องตรวจเลขบัตรซ้ำก่อนบันทึก และควรเรียก `validate_id()` ก่อนเขียนข้อมูล
 - โมดูลนี้รับผิดชอบไฟล์เท่านั้น ไม่ควรแสดงเมนูหรือรับ input จากผู้ใช้
 
@@ -289,7 +286,6 @@ TAX_BRACKETS = (
 - ต้องเก็บโปรไฟล์ผู้เสียภาษีตาม schema ในหัวข้อ 4
 - ต้องรองรับการเพิ่ม แก้ไข ค้นหา และลบข้อมูลโดยไม่ทำให้รายการอื่นสูญหาย
 - ต้องไม่บันทึกข้อมูลที่ไม่ผ่านการตรวจสอบเลขบัตรหรือ schema
-- หากใช้ JSON จริง ควรเปลี่ยนชื่อเป็น `taxpayer.json` หรือระบุ format ในเอกสารให้ตรงกับนามสกุลไฟล์
 
 ### เอกสาร
 
