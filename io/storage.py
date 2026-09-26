@@ -54,7 +54,7 @@ def delete_taxpayer(id_card: str) -> bool:
     pass
 
 def export_summary_profile(id_card: str):
-    profile = create_profile(id_card)
+      profile = create_profile(id_card)
     if not profile:
         return None
     
@@ -62,15 +62,14 @@ def export_summary_profile(id_card: str):
         filename = f"summary_{id_card}.txt"
         with open(filename, "w", encoding="utf-8") as file:
             file.write(f"สรุปข้อมูลผู้เสียภาษี\n")
-            file.write(f"="*30+",\n")
+            file.write(f"="*30+ "\n")
             file.write(f"เลขบัตรประชาชน: {profile['id_card']}\n")
             file.write(f"ชื่อ-นามสกุล: {profile['name']}\n")
             file.write(f"อายุ: {profile['age']}\n")
             file.write(f"สถานะ: {profile['status']}\n")
-            file.write(f"รายได้:\n")
+            file.write(f"รายได้:{profile['incomes']:,}\n")
             file.write(f"ค่าลดหย่อน: {profile['deductions']}\n")
-            file.write(f"ภาษีที่ต้องชำระ: {profile['tax']}\n")
+            file.write(f"ภาษีที่ต้องชำระ: {profile['tax']:,}\n")
 
         return filename
-export_summary_profile("1-2345-67890-12-3")
     
