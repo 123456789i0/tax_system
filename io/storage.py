@@ -46,9 +46,14 @@ def create_profile(id_card) -> dict:
             return profile
     return False
 
-def find_taxpayer(id_card) -> bool:
+def find_taxpayer(id_card) -> int:
     #เช็คว่า id_card ที่ใส่เข้ามานั้นมีอยู่แล้วใน taxpayer.txt หรือมั้ย แล้ว return ค่า bool
-    pass
+    data = load_all()
+    for i in range(1, len(data)):
+        d = json.loads(data[i])
+        if d["id_card"] == id_card:
+            return i
+    return 0
 
 def delete_taxpayer(id_card: str) -> bool:
     pass
