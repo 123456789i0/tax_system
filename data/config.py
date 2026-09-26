@@ -16,9 +16,6 @@ TAX_BRACKETS = (
     (float("inf"), 35),
 )
 
-RETIREMENT_GROUP = ["pvd", "rmf", "ssf"]   # เพดานรวมกันแยกต่างหาก
-RETIREMENT_GROUP_CAP = 500000
-
 DEDUCTION_RULES = {
     "personal": {"type": "fixed", "amount": 60000},
     "spouse":   {"type": "fixed", "amount": 60000},
