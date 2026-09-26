@@ -56,8 +56,23 @@ def find_taxpayer(id_card) -> int:
     return 0
 
 def delete_taxpayer(id_card: str) -> bool:
-    pass
-
+    data = load_all()
+    found = False
+    updated_data = [] 
+    
+    for profile in data:
+        d = json.loads(profile)
+        if d.get("id_card") == id_card:
+            found = True
+        else:
+            updated_data.append(profile)
+    if not found:
+        return False
+    with open("./data/taxpayer.txt", "w", encoding="utf-8") as file:
+        file.writelines(updated_data)
+       
+    return True
+        
 def export_summary_profile(id_card: str):
       profile = create_profile(id_card)
     if not profile:
