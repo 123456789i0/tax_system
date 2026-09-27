@@ -63,3 +63,36 @@ tax = cal_tax(net_income)
 print(net_income)
 print(tax)
 
+def calc_score(ans, tax_ans):
+    
+    if tax_ans == 0:
+        if ans == 0:
+            point = 100
+        elif ans <= 10:
+            point = 80
+        elif ans <= 20:
+            point = 60
+        elif ans <= 50:
+            point = 40
+        elif ans <= 100:
+            point = 20
+        else:
+            point = 0
+        return point
+
+    error_percent = abs(ans - tax_ans) / abs(tax_ans) * 100
+
+    if error_percent <= 1:
+        point =100
+    elif error_percent <= 5:
+        point = 80
+    elif error_percent <= 10:
+        point = 60
+    elif error_percent <= 20:
+        point = 40
+    elif error_percent <= 50:
+        point = 20
+    else:
+        point = 0
+
+    return point
