@@ -64,6 +64,10 @@ def input_choice(data: str, valid_choice: list) -> str:
     while data not in valid_choice:
         print("กรุณาเลือกจากตัวเลือกที่กำหนดเท่านั้น", valid_choice)
         data = input("กรอกข้อมูลใหม่อีกครั้ง: ").strip()
+
+    if valid_choice == ["y", "n"]:
+        if data == "y": return True
+        else: return False
     return data
     #ใช้เช็คข้อมูลใน profile ที่ต้องกรอกเป็น ตัวเลือกที่มีเท่านั้น เช่น list("single", "married")
-pass
+
