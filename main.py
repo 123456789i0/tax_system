@@ -1,9 +1,8 @@
-
-from core.calculator import cal_tax, calc_net_income
+from core.calculator import calc_net_income, cal_tax ,calc_score
 from core.deduction import calc_dection
-from io.display import show_menu, input_menu, input_id, input_text, input_num, input_choice
-from io.storage import save_taxpayer, find_taxpayer, delete_taxpayer, export_summary_profile
-
+from io_utils.display import show_menu, input_text, input_num, input_menu, input_id, input_choice
+from io_utils.storage import save_taxpayer,create_profile_to_dict, create_profile_to_txt, find_taxpayer, delete_taxpayer, export_summary_profile
+from extra.quiz import quiz
 
 def menu1_add_taxpayer(id_card):
     name_input = input("กรอกชื่อ: ")
@@ -18,8 +17,8 @@ def menu1_add_taxpayer(id_card):
     income_input = input("กรอกรายได้ต่อเดือน: ")
     income = input_num(income_input)
 
-    spouse_input = input("มีคู่สมรสไหม? (y/n): ").strip().lower()
-    spouse = input_num(spouse_input == "y")
+    spouse_input = input("คู่สมรสมีรายได้ไหม? (y/n): ").strip().lower()
+    spouse = input_choice(spouse_input, ["y", "n"])
 
     children_input = input("จำนวนบุตร: ")
     children = int(input_num(children_input))
@@ -35,7 +34,7 @@ def menu1_add_taxpayer(id_card):
 
     deductions = calc_dection(spouse, status, children, parent, insurance, fund, income)
 
-    profile = create_profile()
+    profile = create_profile_to_dict(id_card, name, age, status, income, deductions)
     save_taxpayer(profile)
     print("เพิ่มข้อมูลภาษีเรียบร้อยเเล้ว\n")
     #เพิ่มข้อมูลในไฟล์ taxpayer.py
@@ -46,7 +45,13 @@ def menu1_add_taxpayer(id_card):
 
 def menu2_calculate_tax(id_card):
     #หาค่าภาษีที่เคยมีใน taxpayer.txt แต่หากไม่เคยให้คำนวณภาษี และบันทึก tax ลงในไฟล์ taxpayer.txt
-    pass
+    profile = create_profile_to_txt(id_card)
+    net_income = calc_net_income(profile)
+    tax = cal_tax(net_income)
+    print(f"จำนวนภาษีที่ต้องชำระ = {tax:,.2f} บาท ")
+
+    
+
 
 def menu3_create_id_txt(id_card):
     filename = export_summary_profile(id_card)
@@ -68,7 +73,11 @@ def menu4_delete_taxpayer(id_card):
 
 def menu5_quiz():
     #สุ่มคำถามจาก ./data/question.txt
-    pass
+    profile = quiz()
+    print(profile)
+    ans = float(input("คำตอบ = "))
+    score = calc_score(ans,profile["tax"])
+    
 
 while True:
 
@@ -81,17 +90,20 @@ while True:
         break
 
     elif choice == "1":
-        id_card = input_id()
+        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
+        id_card = input_id(id_card)
         if not find_taxpayer(id_card):
-            menu1_add_taxpayer() #เรียกใช้งานฟังก์ชันที่ทำหน้าที่รับข้อมูลจาก user ให้ถูกต้อง และเพิ่มข้อมูล profile ลงใน taxpayer.py
+            menu1_add_taxpayer(id_card) #เรียกใช้งานฟังก์ชันที่ทำหน้าที่รับข้อมูลจาก user ให้ถูกต้อง และเพิ่มข้อมูล profile ลงใน taxpayer.py
         else:
             print("เลขบัตรประจำตัวประชาชนนี้มีการบันทึกข้อมูลเอาไว้แล้ว\n")
             continue
 
-    elif choice == "2":
-        id_card = input_id()
+    elif choice == "2":       
+        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
+        id_card = input_id(id_card)
         if find_taxpayer(id_card):
             menu2_calculate_tax(id_card)
+        
         else:
             print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ โปรดเพิ่มข้อมูลผู้เสียภาษีก่อนคำนวณภาษี\n")
             continue
@@ -118,3 +130,9 @@ while True:
     else:
         print("ERROR!")
         break
+
+    ask = input("continue program (y/n) : ")
+    if ask.lower() == "n":
+        print("program is done")
+        break
+    
