@@ -58,8 +58,10 @@ def menu3_create_id_txt(id_card):
     #ออกแบบ และสร้างไฟล์ .txt ของ id_card ที่ user กรอก โดยใช้ชื่อไฟล์ ex. 1-2345-67891-23-4.txt
 
 def menu4_delete_taxpayer(id_card):
-    delete_taxpayer(id_card)
-    print("ลบข้อมูลผู้เสียภาษีเรียบร้อยเเล้ว\n")
+    if delete_taxpayer(id_card):
+        print("ลบข้อมูลผู้เสียภาษีเรียบร้อยเเล้ว\n")
+    else:
+        print("ไม่พบข้อมูลผู้เสียภาษี ลบไม่สำเร็จ\n")
     #ลบข้อมูล profile ของ id_card ที่ user กรอก
 
 
