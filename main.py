@@ -50,7 +50,11 @@ def menu2_calculate_tax(id_card):
 
 def menu3_create_id_txt(id_card):
     filename = export_summary_profile(id_card)
-    print(f"สร้างไฟล์ {filename} เรียบร้อยเเล้ว\n")
+
+    if filename is None:
+        print("ไม่พบเลขบัตรประจำตัวประชาชนนี้ในระบบ\n")
+    else:
+        print(f"สร้างไฟล์ {filename} เรียบร้อยเเล้ว\n")
     #ออกแบบ และสร้างไฟล์ .txt ของ id_card ที่ user กรอก โดยใช้ชื่อไฟล์ ex. 1-2345-67891-23-4.txt
 
 def menu4_delete_taxpayer(id_card):
