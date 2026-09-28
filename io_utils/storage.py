@@ -96,7 +96,7 @@ def export_summary_profile(id_card: str):
         return None
     
     if profile:
-        filename = f"summary_{id_card}.txt"
+        filename = f"./data/summary_{id_card}.txt"
         with open(filename, "w", encoding="utf-8") as file:
             file.write(f"สรุปข้อมูลผู้เสียภาษี\n")
             file.write(f"="*30+ "\n")
