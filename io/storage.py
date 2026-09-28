@@ -8,8 +8,9 @@ import json
 
 def save_taxpayer(profile: dict) -> bool:
     if profile:
-        with open("taxpayer.txt", "a") as file:
-            file.write(profile)
+        with open("./data/taxpayer.txt", "a", encoding="utf-8") as file:
+            json.dump(profile, file, ensure_ascii=False)
+            file.write("\n")
             return True
     return False
 
@@ -19,25 +20,64 @@ def load_all() -> list:
         data = file.readlines()
     return data
 
+def create_profile_to_dict(id_card="", name="", age="", status="", income=None, deductions=None):
+    profile = dict()
+    profile.setdefault("id_card", id_card)
+    profile.setdefault("name", name)
+    profile.setdefault("age", age)
+    profile.setdefault("status", status)
+    profile.setdefault("income", income)
+    profile.setdefault("deductions", deductions)
+    profile.setdefault("tax", None)
+    return profile
+
+def create_profile_to_txt(id_card) -> dict:
+    # """สร้าง dict ของ profile id_card นั้น ๆ จาก taxpayer.txt แล้ว return profile type-data: dict
+    # ตัวอย่างค่าที่ต้องการให้ return profile = {
+    # "id_card":    "1234567890123",   # str, 13 หลัก
+    # "name":       "สมชาย ใจดี",       # str
+    # "age":        35,                 # int
+    # "status":     "single",           # "single" / "married"
+    # "incomes": [                      # list ของ dict
+    #     {"type": "เงินเดือน", "amount": 480000.0},
+    #     {"type": "ค่าเช่า",   "amount":  60000.0},
+    # ],
+    # "deductions": {                   # dict
+    #     "personal":  60000.0,
+    #     "spouse":        0.0,
+    #     "insurance": 25000.0,
+    #     "fund":      50000.0,
+    # },
+    # "tax": None
+    # }"""
+    data = load_all()
+    for each_data in data:
+        d = json.loads(each_data)
+        try:
+            if d["id_card"] == id_card:
+                profile = d
+                return profile
+        except: continue
+    return False
 def create_profile(id_card) -> dict:
-    """สร้าง dict ของ profile id_card นั้น ๆ จาก taxpayer.txt แล้ว return profile type-data: dict
-    ตัวอย่างค่าที่ต้องการให้ return profile = {
-    "id_card":    "1234567890123",   # str, 13 หลัก
-    "name":       "สมชาย ใจดี",       # str
-    "age":        35,                 # int
-    "status":     "single",           # "single" / "married"
-    "incomes": [                      # list ของ dict
-        {"type": "เงินเดือน", "amount": 480000.0},
-        {"type": "ค่าเช่า",   "amount":  60000.0},
-    ],
-    "deductions": {                   # dict
-        "personal":  60000.0,
-        "spouse":        0.0,
-        "insurance": 25000.0,
-        "fund":      50000.0,
-    },
-    "tax": None
-    }"""
+    # """สร้าง dict ของ profile id_card นั้น ๆ จาก taxpayer.txt แล้ว return profile type-data: dict
+    # ตัวอย่างค่าที่ต้องการให้ return profile = {
+    # "id_card":    "1234567890123",   # str, 13 หลัก
+    # "name":       "สมชาย ใจดี",       # str
+    # "age":        35,                 # int
+    # "status":     "single",           # "single" / "married"
+    # "incomes": [                      # list ของ dict
+    #     {"type": "เงินเดือน", "amount": 480000.0},
+    #     {"type": "ค่าเช่า",   "amount":  60000.0},
+    # ],
+    # "deductions": {                   # dict
+    #     "personal":  60000.0,
+    #     "spouse":        0.0,
+    #     "insurance": 25000.0,
+    #     "fund":      50000.0,
+    # },
+    # "tax": None
+    # }"""
     data = load_all()
     for each_data in data:
         d = json.loads(each_data)
@@ -49,10 +89,12 @@ def create_profile(id_card) -> dict:
 def find_taxpayer(id_card) -> int:
     #เช็คว่า id_card ที่ใส่เข้ามานั้นมีอยู่แล้วใน taxpayer.txt หรือมั้ย แล้ว return ค่า bool
     data = load_all()
-    for i in range(1, len(data)):
-        d = json.loads(data[i])
+    for i in range(len(data)):
+        try: d = json.loads(data[i])  
+        except:
+            continue
         if d["id_card"] == id_card:
-            return i
+                return (i+1)
     return 0
 
 def delete_taxpayer(id_card: str) -> bool:
@@ -74,7 +116,7 @@ def delete_taxpayer(id_card: str) -> bool:
     return True
         
 def export_summary_profile(id_card: str):
-      profile = create_profile(id_card)
+    profile = create_profile(id_card)
     if not profile:
         return None
     
@@ -92,4 +134,4 @@ def export_summary_profile(id_card: str):
             file.write(f"ภาษีที่ต้องชำระ: {profile['tax']:,}\n")
 
         return filename
-    
+
