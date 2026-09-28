@@ -4,39 +4,35 @@
 # - เป็น pure function คืนค่าเป็น float/list และห้ามใช้ input, print
 
 # from io.storage import create_profile
-from deduction import calc_dection
+from core.deduction import calc_dection
 
-profile  = {
-        "id_card":    "1234567890123",   # str, 13 หลัก
-        "name":       "สมชาย ใจดี",       # str
-        "age":        35,                 # int
-        "status":     "single", 
-        "child" : 0 ,           # "single" / "married" children = ?
-        "incomes": 48000.0,
+# profile  = {
+#         "id_card":    "1234567890123",   # str, 13 หลัก
+#         "name":       "สมชาย ใจดี",       # str
+#         "age":        35,                 # int
+#         "status":     "single", 
+#         "child" : 0 ,           # "single" / "married" children = ?
+#         "income": 48000.0,
         
-        "deductions": {                   # dict
-            "personal":  60000.0,
-            "spouse":        0,
-            "insurance": 25000.0,
-            "fund":      50000.0,
-        },
-        "tax": None
-        }
+#         "deductions": {                   # dict
+#             "personal":  60000.0,
+#             "spouse":        0,
+#             "insurance": 25000.0,
+#             "fund":      50000.0,
+#         },
+#         "tax": None
+#         }
 
 def calc_net_income(profile: dict) -> float:
-    total_dection = 0
-    for dection in profile["deductions"].values():
-          total_dection += dection
-    net_income = (profile["incomes"]*12) - total_dection
+    total_deduction = 0
+    print(profile)
+    for deduction in profile["dedutions"].values():
+        total_deduction += deduction
+    net_income = (profile["income"]*12) - total_deduction
     return net_income
 
-
-    # profile = create_profile()
-    # Dection = calc_dection()
-    # net_income = (profile["incomes"] * 12) - sum(Dection.values())
-    # return net_income
-    
 def cal_tax(net_income: float) -> float:
+    
     if net_income <= 150000:
             tax = 0
     elif net_income <= 300000:
@@ -53,15 +49,12 @@ def cal_tax(net_income: float) -> float:
         tax = 365000 + (net_income - 2000000) * 0.30
     else:
         tax = 1265000 + (net_income - 5000000) * 0.35
-    
     return tax
 
-
-
-net_income = calc_net_income(profile)
-tax = cal_tax(net_income)
-print(net_income)
-print(tax)
+# net_income = calc_net_income(profile)
+# tax = cal_tax(net_income)
+# print(net_income)
+# print(tax)
 
 def calc_score(ans, tax_ans):
     
