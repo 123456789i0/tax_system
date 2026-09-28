@@ -7,38 +7,35 @@
 
 
 from core.deduction import calc_dection
-from core.calculator import calc_net_income,calc_score
-from io_utils.storage import create_profile_to_dict
+from core.calculator import calc_net_income, cal_tax, calc_score
+from io_utils.storage import create_profile_dict
 import random
 
 def quiz():
-    income = int(random.randrange(25000,80000,1000))
+    income_q = int(random.randrange(25000,80000,1000))
     status_ran = ["married","single"]
-    status = random.choice(status_ran)
-    parent = random.randrange(0,2)
-    spouse = False
-    children = 0
-    if status == "married":
+    status_q = random.choice(status_ran)
+    parent_q = random.randrange(0,2)
+    spouse_q = False
+    children_q = 0
+    if status_q == "married":
         spouse_ran = [True,False]
-        spouse = random.choice(spouse_ran)
-        children = random.randrange(0,4)
-        parent = random.randrange(0,4)
-    insurance = int(random.randrange(10000,100000,1000))
-    fund = random.randrange(10000,100000,1000)
-    print(f"""เงินเดือน {income} บาท 
-    สถานะ {status} 
-    ผู้ปกครอง(มีรายได้ไม่เกิน 30,000 บาท) {parent} คน
-    คู่สมรสมีรายได้ {spouse} (False = ไม่มีรายได้ , True = มีรายได้) 
-    บุตร {children} คน
-    ประกัน {insurance} บาท  
-    กองทุน {fund} บาท""")
+        spouse_q = random.choice(spouse_ran)
+        children_q = random.randrange(0,4)
+        parent_q = random.randrange(0,4)
+    insurance_q = int(random.randrange(10000,100000,1000))
+    fund_q = random.randrange(10000,100000,1000)
+    print(f"""เงินเดือน {income_q} บาท 
+    สถานะ {status_q} 
+    ผู้ปกครอง(มีรายได้ไม่เกิน 30,000 บาท) {parent_q} คน
+    คู่สมรสมีรายได้ {spouse_q} (False = ไม่มีรายได้ , True = มีรายได้) 
+    บุตร {children_q} คน
+    ประกัน {insurance_q} บาท  
+    กองทุน {fund_q} บาท""")
 
                 # calc_dection(spouse, status, children, parent,insurance,fund, income)
-    id_card = ""
-    name = ""
-    age = None
-    deductions = calc_dection(spouse, status, children,parent,insurance,fund, income)
-    tax_ans = calc_net_income(deductions) - deductions
-    profile = create_profile_to_dict(id_card, name, age, status, income , deductions,tax_ans)
-    print(profile)
+    deductions_q = calc_dection(spouse_q, status_q, children_q,parent_q,insurance_q,fund_q, income_q)
+    profile = create_profile_dict(status=status_q, income=income_q, deductions=deductions_q)
+    tax_ans = cal_tax(calc_net_income(profile))
+    profile["tax"] = tax_ans
     return profile

@@ -25,8 +25,7 @@ from core.deduction import calc_dection
 
 def calc_net_income(profile: dict) -> float:
     total_deduction = 0
-    print(profile)
-    for deduction in profile["dedutions"].values():
+    for deduction in profile["deductions"].values():
         total_deduction += deduction
     net_income = (profile["income"]*12) - total_deduction
     return net_income

@@ -1,7 +1,7 @@
 from core.calculator import calc_net_income, cal_tax ,calc_score
 from core.deduction import calc_dection
 from io_utils.display import show_menu, input_text, input_num, input_menu, input_id, input_choice
-from io_utils.storage import save_taxpayer,create_profile_to_dict, create_profile_to_txt, find_taxpayer, delete_taxpayer, export_summary_profile
+from io_utils.storage import save_taxpayer,create_profile_dict, create_profile, find_taxpayer, delete_taxpayer, export_summary_profile
 from extra.quiz import quiz
 
 def menu1_add_taxpayer(id_card):
@@ -33,25 +33,23 @@ def menu1_add_taxpayer(id_card):
     fund = input_num(fund_input)
 
     deductions = calc_dection(spouse, status, children, parent, insurance, fund, income)
-
-    profile = create_profile_to_dict(id_card, name, age, status, income, deductions)
-    save_taxpayer(profile)
-    print("เพิ่มข้อมูลภาษีเรียบร้อยเเล้ว\n")
+    profile = create_profile_dict(id_card, name, age, status, income, deductions)
+    net_income = calc_net_income(profile)
+    tax = cal_tax(net_income)
+    profile["tax"] = tax
+    isSave = save_taxpayer(profile)
+    if isSave: print("เพิ่มข้อมูลภาษีเรียบร้อยเเล้ว\n")
+    else: print("Error!")
     #เพิ่มข้อมูลในไฟล์ taxpayer.py
     ### หมายเหตุเข้าไปดู requirment ค่าที่ต้องการในไฟล์ taxpayer.txt
     #ใช้งานคู่กับ save taxpayer
     # รายได้ต่อเดือน
-    
 
 def menu2_calculate_tax(id_card):
     #หาค่าภาษีที่เคยมีใน taxpayer.txt แต่หากไม่เคยให้คำนวณภาษี และบันทึก tax ลงในไฟล์ taxpayer.txt
-    profile = create_profile_to_txt(id_card)
-    net_income = calc_net_income(profile)
-    tax = cal_tax(net_income)
+    profile = create_profile(id_card)
+    tax = cal_tax(profile["tax"])
     print(f"จำนวนภาษีที่ต้องชำระ = {tax:,.2f} บาท ")
-
-    
-
 
 def menu3_create_id_txt(id_card):
     filename = export_summary_profile(id_card)
@@ -69,15 +67,12 @@ def menu4_delete_taxpayer(id_card):
         print("ไม่พบข้อมูลผู้เสียภาษี ลบไม่สำเร็จ\n")
     #ลบข้อมูล profile ของ id_card ที่ user กรอก
 
-
-
 def menu5_quiz():
     #สุ่มคำถามจาก ./data/question.txt
     profile = quiz()
-    print(profile)
     ans = float(input("คำตอบ = "))
-    score = calc_score(ans,profile["tax"])
-    
+    score = calc_score(ans,profile["tax"])  
+    print(score)
 
 while True:
 
