@@ -1,1 +1,2 @@
-
+"ระบบเก็บข้อมูลผู้เสียภาษี"
+{"id_card": "1-2345-67891-23-4", "name": "cake", "age": 14, "status": "single", "income": 5000.0, "deductions": {"personal": 60000, "spouse": 60000, "parent": 120000, "child": 90000, "insurance": 100.0, "fund": 100.0}, "tax": 0}
