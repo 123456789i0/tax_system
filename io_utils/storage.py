@@ -74,20 +74,11 @@ def create_profile(id_card) -> dict:
 
 def delete_taxpayer(id_card: str) -> bool:
     data = load_all()
-    found = False
-    updated_data = [] 
-    
-    for profile in data:
-        d = json.loads(profile)
-        if d.get("id_card") == id_card:
-            found = True
-        else:
-            updated_data.append(profile)
-    if not found:
-        return False
+    line = find_taxpayer(id_card)
+    data.remove(data[line])
     with open("./data/taxpayer.txt", "w", encoding="utf-8") as file:
-        file.writelines(updated_data)
-       
+        for d in data:
+            file.write(d)
     return True
         
 def export_summary_profile(id_card: str):
@@ -109,4 +100,3 @@ def export_summary_profile(id_card: str):
             file.write(f"ภาษีที่ต้องชำระ: {profile['tax']:,}\n")
 
         return filename
-
