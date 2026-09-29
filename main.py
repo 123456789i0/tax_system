@@ -72,8 +72,7 @@ def menu5_quiz():
     profile = quiz()
     ans = float(input("คำตอบ = "))
     score = calc_score(ans,profile["tax"])  
-    print(f"เฉลยภาษีที่ต้องจ่าย {profile["tax"]} บาทส่วนต่าง {abs(profile["tax"]-ans)} บาทคลาดเคลื่อน {((abs(profile["tax"]-ans)/max(profile["tax"],1)*100)):2f}% คุณได้ {score} คะแนน")
-
+    print(f"เฉลยภาษีที่ต้องจ่าย {profile["tax"]} บาทส่วนต่าง {abs(profile["tax"]-ans)} บาทคลาดเคลื่อน {min(((abs(profile["tax"]-ans)/max(profile["tax"],1)*100)),100):2f}% ")
 while True:
 
     choice = show_menu()
