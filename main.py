@@ -1,4 +1,4 @@
-from core.calculator import calc_net_income, cal_tax ,calc_score
+from core.calculator import calc_net_income, cal_tax 
 from core.deduction import calc_dection
 from io_utils.display import show_menu, input_text, input_num, input_menu, input_id, input_choice
 from io_utils.storage import save_taxpayer,create_profile_dict, create_profile, find_taxpayer, delete_taxpayer, export_summary_profile
@@ -70,9 +70,11 @@ def menu4_delete_taxpayer(id_card):
 def menu5_quiz():
     #สุ่มคำถามจาก ./data/question.txt
     profile = quiz()
-    ans = float(input("คำตอบ = "))
-    score = calc_score(ans,profile["tax"])  
-    print(f"เฉลยภาษีที่ต้องจ่าย {profile["tax"]} บาทส่วนต่าง {abs(profile["tax"]-ans)} บาทคลาดเคลื่อน {min(((abs(profile["tax"]-ans)/max(profile["tax"],1)*100)),100):2f}% ")
+    ans_u = input("คำตอบ = ")
+    ans = input_num(ans_u)
+
+ 
+    print(f"เฉลยภาษีที่ต้องจ่าย {profile["tax"]} บาทส่วนต่าง {abs(profile["tax"]-ans)} บาทคลาดเคลื่อน {min(((abs(profile["tax"]-ans)/max(profile["tax"],1)*100)),100):.2f}% ")
 while True:
 
     choice = show_menu()
