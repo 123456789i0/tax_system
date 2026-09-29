@@ -1,136 +1,74 @@
-from core.calculator import calc_net_income, cal_tax ,calc_score
-from core.deduction import calc_dection
-from io_utils.display import show_menu, input_text, input_num, input_menu, input_id, input_choice
-from io_utils.storage import save_taxpayer,create_profile_dict, create_profile, find_taxpayer, delete_taxpayer, export_summary_profile
-from extra.quiz import quiz
+# Requirement:
+# - มี show_menu() รับตัวเลือกเมนูจากผู้ใช้
+# - มี input_number(prompt, min, max) ตรวจรูปแบบและช่วงของตัวเลข
+# - มี print_table(), print_summary() และ print_bar_chart() สำหรับแสดงผล
+# - ปัดเศษเงินเฉพาะตอนแสดงผล และรองรับข้อมูลว่างโดยไม่ทำให้โปรแกรมหยุด
+import re
+def show_menu() -> input:
+    print("\n===== Tax System =====")
+    print("1. เพิ่มข้อมูลผู้เสียภาษี")
+    print("2. คำนวณภาษี")
+    print("3. สร้างข้อมูลผู้เสียภาษีในรูปแบบไฟล์ .txt")
+    print("4. ลบข้อมูลผู้เสียภาษี")
+    print("5. เล่นควิซ")
+    print("0. ออกจากโปรแกรม")
 
-def menu1_add_taxpayer(id_card):
-    name_input = input("กรอกชื่อ: ")
-    name = input_text(name_input)
+    return input("เลือกเมนู: ")
 
-    age_input = input("กรอกอายุ: ")
-    age = int(input_num(age_input))
+###หมายเหตุ ในการ input ต้อง ใช้ function strip ทุกครั้ง
+###หมายเหตุ ในการ input ต้อง ใช้ function strip ทุกครั้ง
+def input_menu(chioce: str) -> str:
+    valid_choices = ["0","1","2","3","4","5"]
 
-    status_input = input("กรอกสถานภาพ (single/married):")
-    status = input_choice(status_input, ["single","married"])
+    while chioce.strip() not in valid_choices:
+        print("กรุณากรอกเมนูให้ถูกต้อง(1-5)")
+        # chioce = input("เลือกเมนู:")
+        return input("เลือกเมนู:")
+    return chioce
+    #เช็คว่า user กรอกข้อมูลใน show_menu() ถูกต้องมั้ย ถ้าไม่ให้กรอกใหม่ แต่ถ้าถูก return chioce: str
+pass
 
-    income_input = input("กรอกรายได้ต่อเดือน: ")
-    income = input_num(income_input)
+def input_id(data: str) -> bool:
+    data = data.strip()
+    while not (data.isdigit() and len(data)==13):
+        print("กรุณากรอกเลขบัตรประจำตัวประชาชนให้ถูกต้อง 13 หลัก")
+        data = input("กรอกเลขบัตรประจำตัวประชาชน:")
+    id_card = f"{data[0]}-{data[1:5]}-{data[5:10]}-{data[10:12]}-{data[12]}"
+    return id_card
+    #เช็คว่า id_card ถูกต้องมั้ย รูปแบบที่ต้องการคือ id_card = "1234567891234" ถ้าไม่ให้กรอกใหม่จนกว่าจะถูก และ เก็บข้อมูลเป็น id_card = "1-2345-67891-23-4"
+pass
 
-    spouse_input = input("คู่สมรสมีรายได้ไหม? (y/n): ").strip().lower()
-    spouse = input_choice(spouse_input, ["y", "n"])
+def input_text(data: str) -> str:
+    data = data.strip()
+    pattern = r'^[a-zA-Zก-๙\s]+$'
+    while not (data != "" and re.match(pattern, data)):
+        print("กรุณากรอกข้อมูลให้ถูกต้อง (เฉพาะตัวอักษรเท่านั้น ห้ามมีตัวเลขหรือสัญลักษณ์)")
+        data = input("กรอกชื่อใหม่อีกครั้ง: ").strip()
+        data = data.strip()
+    return data
+    #ใข้เช็คข้อมูลใน profile ที่ต้องกรอกเป็น str ได้แก่ ชื่อ สถานภาพ เป้าหมายคือต้องเมคเซนส์ ไม่เอาแบบ เทพซ่า777 อิอิ ถ้าไม่ให้กรอกใหม่จนกว่าจะถูก
+pass
 
-    children_input = input("จำนวนบุตร: ")
-    children = int(input_num(children_input))
+def input_num(data: str) -> float:
+    data = data.strip()
 
-    parent_input = input("จำนวนบิดามารดาที่ต้องเลี้ยงดู: ")
-    parent = int(input_num(parent_input))
+    while not (data != "" and data.replace("-","", 1).isdigit() and float(data) >=0 ):
+        print("กรุณากรอกข้อมูลให้ถูกต้อง (เฉพาะตัวเลขเท่านั้น เช่น 17 หรือ 17.0)")
+        data = input("กรอกข้อมูลใหม่อีกครั้ง: ").strip()
+    return float(data)
+    #ใข้เช็คข้อมูลใน profile ที่ต้องกรอกเป็น num ได้แก่ อายุ รายได้ เป้าหมายคือต้องเมคเซนส์ ไม่เอาแบบ สิบเจ็ด จะเอา ("17.0") และ return (data: float) ถ้าไม่ให้กรอกใหม่จนกว่าจะถูก
+pass
 
-    insurance_input = input("ค่าเบี้ยประกัน (ถ้าไม่มีใส่ 0 ): ")
-    insurance = input_num(insurance_input)
+def input_choice(data: str, valid_choice: list) -> str:
+    data = data.strip()
 
-    fund_input = input("เงินกองทุน (ถ้าไม่มีใส่ 0 ): ")
-    fund = input_num(fund_input)
+    while data not in valid_choice:
+        print("กรุณาเลือกจากตัวเลือกที่กำหนดเท่านั้น", valid_choice)
+        data = input("กรอกข้อมูลใหม่อีกครั้ง: ").strip()
 
-    deductions = calc_dection(spouse, status, children, parent, insurance, fund, income)
-    profile = create_profile_dict(id_card, name, age, status, income, deductions)
-    net_income = calc_net_income(profile)
-    tax = cal_tax(net_income)
-    profile["tax"] = tax
-    isSave = save_taxpayer(profile)
-    if isSave: print("เพิ่มข้อมูลภาษีเรียบร้อยเเล้ว\n")
-    else: print("Error!")
-    #เพิ่มข้อมูลในไฟล์ taxpayer.py
-    ### หมายเหตุเข้าไปดู requirment ค่าที่ต้องการในไฟล์ taxpayer.txt
-    #ใช้งานคู่กับ save taxpayer
-    # รายได้ต่อเดือน
+    if valid_choice == ["y", "n"]:
+        if data == "y": return True
+        else: return False
+    return data
+    #ใช้เช็คข้อมูลใน profile ที่ต้องกรอกเป็น ตัวเลือกที่มีเท่านั้น เช่น list("single", "married")
 
-def menu2_calculate_tax(id_card):
-    #หาค่าภาษีที่เคยมีใน taxpayer.txt แต่หากไม่เคยให้คำนวณภาษี และบันทึก tax ลงในไฟล์ taxpayer.txt
-    profile = create_profile(id_card)
-    tax = cal_tax(profile["tax"])
-    print(f"จำนวนภาษีที่ต้องชำระ = {tax:,.2f} บาท ")
-
-def menu3_create_id_txt(id_card):
-    filename = export_summary_profile(id_card)
-
-    if filename is None:
-        print("ไม่พบเลขบัตรประจำตัวประชาชนนี้ในระบบ\n")
-    else:
-        print(f"สร้างไฟล์ {filename} เรียบร้อยเเล้ว\n")
-    #ออกแบบ และสร้างไฟล์ .txt ของ id_card ที่ user กรอก โดยใช้ชื่อไฟล์ ex. 1-2345-67891-23-4.txt
-
-def menu4_delete_taxpayer(id_card):
-    if delete_taxpayer(id_card):
-        print("ลบข้อมูลผู้เสียภาษีเรียบร้อยเเล้ว\n")
-    else:
-        print("ไม่พบข้อมูลผู้เสียภาษี ลบไม่สำเร็จ\n")
-    #ลบข้อมูล profile ของ id_card ที่ user กรอก
-
-def menu5_quiz():
-    #สุ่มคำถามจาก ./data/question.txt
-    profile = quiz()
-    ans = float(input("คำตอบ = "))
-    score = calc_score(ans,profile["tax"])  
-    print(score)
-
-while True:
-
-    choice = show_menu()
-    choice = input_menu(choice)
-    # input_menu(choice)
-
-
-    if choice == "0":
-        print("จบการทำงานของระบบคำนวณและจัดการภาษีเงินได้บุคคลธรรมดา\n")
-        break
-
-    elif choice == "1":
-        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
-        id_card = input_id(id_card)
-        if not find_taxpayer(id_card):
-            menu1_add_taxpayer(id_card) #เรียกใช้งานฟังก์ชันที่ทำหน้าที่รับข้อมูลจาก user ให้ถูกต้อง และเพิ่มข้อมูล profile ลงใน taxpayer.py
-        else:
-            print("เลขบัตรประจำตัวประชาชนนี้มีการบันทึกข้อมูลเอาไว้แล้ว\n")
-            continue
-
-    elif choice == "2":       
-        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
-        id_card = input_id(id_card)
-        if find_taxpayer(id_card):
-            menu2_calculate_tax(id_card)
-        
-        else:
-            print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ โปรดเพิ่มข้อมูลผู้เสียภาษีก่อนคำนวณภาษี\n")
-            continue
-
-    elif choice == "3":
-        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
-        id_card = input_id(id_card)
-        if find_taxpayer(id_card):
-            menu3_create_id_txt(id_card)
-        else:
-            print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ\n")
-            continue
-
-    elif choice == "4":
-        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
-        # id_card = input_id(id_card)
-        id_card = input_id(id_card)
-        if find_taxpayer(id_card):
-            menu4_delete_taxpayer(id_card)
-        else:
-            print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ\n")
-            continue
-
-    elif choice == "5":
-        menu5_quiz()
-
-    else:
-        print("ERROR!")
-        break
-
-    ask = input("continue program (y/n) : ")
-    if ask.lower() == "n":
-        print("program is done")
-        break
