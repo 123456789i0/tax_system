@@ -22,9 +22,8 @@ def input_menu(chioce: str) -> str:
 
     while chioce.strip() not in valid_choices:
         print("กรุณากรอกเมนูให้ถูกต้อง(1-5)")
-        chioce = input("เลือกเมนู:")
-        return chioce.strip()
-    #เช็คว่า user กรอกข้อมูลใน show_menu() ถูกต้องมั้ย ถ้าไม่ให้กรอกใหม่ แต่ถ้าถูก return chioce: str
+        # chioce = input("เลือกเมนู:")
+        return input("เลือกเมนู:")
 pass
 
 def input_id(data: str) -> bool:
