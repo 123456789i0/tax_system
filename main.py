@@ -77,8 +77,9 @@ def menu5_quiz():
 while True:
 
     choice = show_menu()
+    choice = input_menu(choice)
+    # input_menu(choice)
 
-    input_menu(choice)
 
     if choice == "0":
         print("จบการทำงานของระบบคำนวณและจัดการภาษีเงินได้บุคคลธรรมดา\n")
@@ -104,7 +105,8 @@ while True:
             continue
 
     elif choice == "3":
-        id_card = input_id()
+        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
+        id_card = input_id(id_card)
         if find_taxpayer(id_card):
             menu3_create_id_txt(id_card)
         else:
@@ -112,7 +114,9 @@ while True:
             continue
 
     elif choice == "4":
-        id_card = input_id()
+        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
+        # id_card = input_id(id_card)
+        id_card = input_id(id_card)
         if find_taxpayer(id_card):
             menu4_delete_taxpayer(id_card)
         else:
