@@ -96,7 +96,10 @@ def export_summary_profile(id_card: str):
             file.write(f"อายุ: {profile['age']}\n")
             file.write(f"สถานะ: {profile['status']}\n")
             file.write(f"รายได้:{profile['income']:,}\n")
-            file.write(f"ค่าลดหย่อน: {profile['deductions']}\n")
+            file.write("ค่าลดหย่อน: {\n")
+            for key, value in profile['deductions'].items():
+                file.write(f' "{key}": {value:,}\n')
+                file.write("}\n")
             file.write(f"ภาษีที่ต้องชำระ: {profile['tax']:,}\n")
 
         return filename
