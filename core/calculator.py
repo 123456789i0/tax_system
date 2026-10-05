@@ -3,7 +3,7 @@
 # - มี calc_net_income(profile) คำนวณเงินได้สุทธิหลังหักค่าลดหย่อน
 # - เป็น pure function คืนค่าเป็น float/list และห้ามใช้ input, print
 
-# from io.storage import create_profile
+# from io.storage import create_profile_input
 from core.deduction import calc_dection
 
 # profile  = {

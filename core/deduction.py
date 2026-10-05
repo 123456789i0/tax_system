@@ -3,7 +3,7 @@
 # - รองรับ fixed, per-unit, percent-capped และเพดานกองทุนเกษียณ
 # - ไม่ให้ค่าลดหย่อนติดลบ และห้ามใช้ input, print
 
-# from io.storage import create_profile
+# from io.storage import create_profile_input
 
 def calc_dection(spouse, status, children, parent, insurance, fund, income) -> dict:
     #คำนวณค่าลดหย่อน และค่าลดหย่อนรวม ของแต่ละ profile id_card แล้ว return ข้อมูลที่เก็บ

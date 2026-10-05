@@ -11,11 +11,9 @@ def show_menu() -> input:
     print("3. สร้างข้อมูลผู้เสียภาษีในรูปแบบไฟล์ .txt")
     print("4. ลบข้อมูลผู้เสียภาษี")
     print("5. เล่นควิซ")
-    print("0. ออกจากโปรแกรม")
 
     return input("เลือกเมนู: ")
 
-###หมายเหตุ ในการ input ต้อง ใช้ function strip ทุกครั้ง
 ###หมายเหตุ ในการ input ต้อง ใช้ function strip ทุกครั้ง
 def input_menu(chioce: str) -> str:
     valid_choices = ["0","1","2","3","4","5"]
@@ -23,10 +21,9 @@ def input_menu(chioce: str) -> str:
     while chioce.strip() not in valid_choices:
         print("กรุณากรอกเมนูให้ถูกต้อง(1-5)")
         # chioce = input("เลือกเมนู:")
-        return input("เลือกเมนู:")
+        return input("เลือกเมนู: ")
     return chioce
     #เช็คว่า user กรอกข้อมูลใน show_menu() ถูกต้องมั้ย ถ้าไม่ให้กรอกใหม่ แต่ถ้าถูก return chioce: str
-pass
 
 def input_id(data: str) -> bool:
     data = data.strip()
@@ -36,7 +33,6 @@ def input_id(data: str) -> bool:
     id_card = f"{data[0]}-{data[1:5]}-{data[5:10]}-{data[10:12]}-{data[12]}"
     return id_card
     #เช็คว่า id_card ถูกต้องมั้ย รูปแบบที่ต้องการคือ id_card = "1234567891234" ถ้าไม่ให้กรอกใหม่จนกว่าจะถูก และ เก็บข้อมูลเป็น id_card = "1-2345-67891-23-4"
-pass
 
 def input_text(data: str) -> str:
     data = data.strip()
@@ -47,7 +43,6 @@ def input_text(data: str) -> str:
         data = data.strip()
     return data
     #ใข้เช็คข้อมูลใน profile ที่ต้องกรอกเป็น str ได้แก่ ชื่อ สถานภาพ เป้าหมายคือต้องเมคเซนส์ ไม่เอาแบบ เทพซ่า777 อิอิ ถ้าไม่ให้กรอกใหม่จนกว่าจะถูก
-pass
 
 def input_num(data: str) -> float:
     data = data.strip()
@@ -57,7 +52,6 @@ def input_num(data: str) -> float:
         data = input("กรอกข้อมูลใหม่อีกครั้ง: ").strip()
     return float(data)
     #ใข้เช็คข้อมูลใน profile ที่ต้องกรอกเป็น num ได้แก่ อายุ รายได้ เป้าหมายคือต้องเมคเซนส์ ไม่เอาแบบ สิบเจ็ด จะเอา ("17.0") และ return (data: float) ถ้าไม่ให้กรอกใหม่จนกว่าจะถูก
-pass
 
 def input_choice(data: str, valid_choice: list) -> str:
     data = data.strip()
@@ -71,4 +65,3 @@ def input_choice(data: str, valid_choice: list) -> str:
         else: return False
     return data
     #ใช้เช็คข้อมูลใน profile ที่ต้องกรอกเป็น ตัวเลือกที่มีเท่านั้น เช่น list("single", "married")
-

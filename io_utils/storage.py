@@ -6,13 +6,15 @@
 ### ทำงานที่เกี่ยวข้องกับการจัดการไฟล์ ./data/taxpayer.txt เท่านั้น
 import json
 
-def create_profile_dict(id_card="", name="", age="", status="", income=None, deductions=None, tax=None):
+def create_profile_input(id_card="", name="", age="", status="", income=0, expenses=0, deductions=0, tax=0):
+    #สร้าง dict ของ profile ใช้งานร่วมกับหการรับตัวแปรของ menu1
     profile = dict()
     profile.setdefault("id_card", id_card)
     profile.setdefault("name", name)
     profile.setdefault("age", age)
     profile.setdefault("status", status)
     profile.setdefault("income", income)
+    profile.setdefault("expenses", expenses)
     profile.setdefault("deductions", deductions)
     profile.setdefault("tax", tax)
     return profile
@@ -33,40 +35,38 @@ def load_all() -> list:
     return data
 
 def find_taxpayer(id_card) -> int:
-    #เช็คว่า id_card ที่ใส่เข้ามานั้นมีอยู่แล้วใน taxpayer.txt หรือมั้ย แล้ว return ค่า bool
+    #เช็คว่า id_card ที่ใส่เข้ามานั้นมีอยู่แล้วใน taxpayer.txt หรือมั้ย แล้ว return ค่า int
     data = load_all()
-    for i in range(len(data)):
+    for line in range(1, len(data)+1):
         try:
-            d = json.loads(data[i])
+            d = json.loads(data[line-1])
             if d["id_card"] == id_card:
-                return i
+                return line
         except:
             continue
-    return 0
+    return None
 
 def create_profile(id_card) -> dict:
-    """สร้าง dict ของ profile id_card นั้น ๆ จาก taxpayer.txt แล้ว return profile type-data: dict
-    ตัวอย่างค่าที่ต้องการให้ return profile = {
+    #สร้าง dict ของ profile id_card นั้น ๆ จาก taxpayer.txt แล้ว return profile type-data: dict
+    """ตัวอย่างค่าที่ต้องการให้ return profile = {
     "id_card":    "1234567890123",   # str, 13 หลัก
     "name":       "สมชาย ใจดี",       # str
     "age":        35,                 # int
     "status":     "single",           # "single" / "married"
-    "income": [                      # list ของ dict
-        {"type": "เงินเดือน", "amount": 480000.0},
-        {"type": "ค่าเช่า",   "amount":  60000.0},
-    ],
+    "income":      400000.0           # float
+    "expenses"     20000.0            #float
     "deductions": {                   # dict
         "personal":  60000.0,
         "spouse":        0.0,
         "insurance": 25000.0,
         "fund":      50000.0,
     },
-    "tax": None
+    "tax": 5000.0
     }"""
     if find_taxpayer(id_card):
         data = load_all()
         line = find_taxpayer(id_card)
-        profile = json.loads(data[line])
+        profile = json.loads(data[line-1]) #index = line-1
         return profile
     else:
         return False
@@ -75,11 +75,15 @@ def create_profile(id_card) -> dict:
 def delete_taxpayer(id_card: str) -> bool:
     data = load_all()
     line = find_taxpayer(id_card)
-    data.remove(data[line])
-    with open("./data/taxpayer.txt", "w", encoding="utf-8") as file:
-        for d in data:
-            file.write(d)
-    return True
+
+    if line:
+        with open("./data/taxpayer.txt", "w", encoding="utf-8") as file:
+            for i in range(len(data)):
+                if i != line-1: #index = line-1
+                    file.write(f"{data[i]}\n")
+            return True
+    else:
+        return False
         
 def export_summary_profile(id_card: str):
     profile = create_profile(id_card)
@@ -95,7 +99,8 @@ def export_summary_profile(id_card: str):
             file.write(f"ชื่อ-นามสกุล: {profile['name']}\n")
             file.write(f"อายุ: {profile['age']}\n")
             file.write(f"สถานะ: {profile['status']}\n")
-            file.write(f"รายได้:{profile['income']:,}\n")
+            file.write(f"รายได้: {profile['income']:,}\n")
+            file.write(f"ค่าใช้จ่ายตามกฎหมาย: {profile['expenses']:,}\n")
             file.write("ค่าลดหย่อน: {\n")
             for key, value in profile['deductions'].items():
                 file.write(f' "{key}": {value:,}\n')
