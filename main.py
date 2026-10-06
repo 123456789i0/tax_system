@@ -78,57 +78,53 @@ def menu5_quiz():
     ans = input_num(ans_u)
 
  
-    print(f"เฉลยภาษีที่ต้องจ่าย {profile["tax"]} บาทส่วนต่าง {abs(profile["tax"]-ans)} บาทคลาดเคลื่อน {min(((abs(profile["tax"]-ans)/max(profile["tax"],1)*100)),100):.2f}% ")
+    print(f"เฉลยภาษีที่ต้องจ่าย {profile["tax"]} บาทส่วนต่าง {abs(profile["tax"]-ans)} บาทคลาดเคลื่อน {min(((abs(profile["tax"]-ans)/max(profile["tax"],1)*100)),100):.2f}%\n")
 
 while True:
 
     choice = show_menu()
     choice = input_menu(choice)
-    # input_menu(choice)
+    if choice:
+        if choice == "1":
+            id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
+            id_card = input_id(id_card)
+            if not find_taxpayer(id_card):
+                menu1_add_taxpayer(id_card) #เรียกใช้งานฟังก์ชันที่ทำหน้าที่รับข้อมูลจาก user ให้ถูกต้อง และเพิ่มข้อมูล profile ลงใน taxpayer.py
+            else:
+                print("เลขบัตรประจำตัวประชาชนนี้มีการบันทึกข้อมูลเอาไว้แล้ว\n")
 
-    if choice == "1":
-        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
-        id_card = input_id(id_card)
-        if not find_taxpayer(id_card):
-            menu1_add_taxpayer(id_card) #เรียกใช้งานฟังก์ชันที่ทำหน้าที่รับข้อมูลจาก user ให้ถูกต้อง และเพิ่มข้อมูล profile ลงใน taxpayer.py
-        else:
-            print("เลขบัตรประจำตัวประชาชนนี้มีการบันทึกข้อมูลเอาไว้แล้ว\n")
+        elif choice == "2":       
+            id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
+            id_card = input_id(id_card)
+            if find_taxpayer(id_card):
+                menu2_calculate_tax(id_card)
+            
+            else:
+                print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ โปรดเพิ่มข้อมูลผู้เสียภาษีก่อนคำนวณภาษี\n")
 
-    elif choice == "2":       
-        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
-        id_card = input_id(id_card)
-        if find_taxpayer(id_card):
-            menu2_calculate_tax(id_card)
-        
-        else:
-            print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ โปรดเพิ่มข้อมูลผู้เสียภาษีก่อนคำนวณภาษี\n")
+        elif choice == "3":
+            id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
+            id_card = input_id(id_card)
+            if find_taxpayer(id_card):
+                menu3_create_id_txt(id_card)
+            else:
+                print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ\n")
 
-    elif choice == "3":
-        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
-        id_card = input_id(id_card)
-        if find_taxpayer(id_card):
-            menu3_create_id_txt(id_card)
-        else:
-            print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ\n")
+        elif choice == "4":
+            id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
+            # id_card = input_id(id_card)
+            id_card = input_id(id_card)
+            if find_taxpayer(id_card):
+                menu4_delete_taxpayer(id_card)
+            else:
+                print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ\n")
 
-    elif choice == "4":
-        id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
-        # id_card = input_id(id_card)
-        id_card = input_id(id_card)
-        if find_taxpayer(id_card):
-            menu4_delete_taxpayer(id_card)
-        else:
-            print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ\n")
+        elif choice == "5":
+            menu5_quiz()
 
-    elif choice == "5":
-        menu5_quiz()
+        elif choice == "0":
+            print("จบการทำงานของระบบคำนวณและจัดการภาษีเงินได้บุคคลธรรมดา")
+            print("โปรแกรมนี้เป็นการคำนวณคร่าวๆโปรดปรึกษาผู้เชี่ยวชาญ\n")
+            break
 
-    else:
-        print("ERROR!")
-        break
-
-    isContinue = input_choice(input("continue program (y/n) : "), ['y', 'n'])
-    if not isContinue:
-        print("จบการทำงานของระบบคำนวณและจัดการภาษีเงินได้บุคคลธรรมดา")
-        print("โปรแกรมนี้เป็นการคำนวณคร่าวๆโปรดปรึกษาผู้เชี่ยวชาญ\n")
-        break
+    isContinue = input_choice(input("continue program press 'y': "), ['y'])

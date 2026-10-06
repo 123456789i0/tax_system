@@ -11,6 +11,7 @@ def show_menu() -> input:
     print("3. สร้างข้อมูลผู้เสียภาษีในรูปแบบไฟล์ .txt")
     print("4. ลบข้อมูลผู้เสียภาษี")
     print("5. เล่นควิซ")
+    print("0. จบการทำงาน")
 
     return input("เลือกเมนู: ")
 
@@ -18,10 +19,9 @@ def show_menu() -> input:
 def input_menu(chioce: str) -> str:
     valid_choices = ["0","1","2","3","4","5"]
 
-    while chioce.strip() not in valid_choices:
+    if chioce.strip() not in valid_choices:
         print("กรุณากรอกเมนูให้ถูกต้อง(1-5)")
-        # chioce = input("เลือกเมนู:")
-        return input("เลือกเมนู: ")
+        chioce = input_menu(input("เลือกเมนู:"))
     return chioce
     #เช็คว่า user กรอกข้อมูลใน show_menu() ถูกต้องมั้ย ถ้าไม่ให้กรอกใหม่ แต่ถ้าถูก return chioce: str
 
