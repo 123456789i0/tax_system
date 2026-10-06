@@ -101,10 +101,23 @@ def export_summary_profile(id_card: str):
             file.write(f"สถานะ: {profile['status']}\n")
             file.write(f"รายได้: {profile['income']:,}\n")
             file.write(f"ค่าใช้จ่ายตามกฎหมาย: {profile['expenses']:,}\n")
-            file.write("ค่าลดหย่อน: {\n")
+            file.write("ค่าลดหย่อน: \n")
             for key, value in profile['deductions'].items():
-                file.write(f' "{key}": {value:,}\n')
-                file.write("}\n")
+                if key == "personal":
+                    name = "ส่วนตัว"
+                elif key == "spouse":
+                    name = "คู่สมรส"
+                elif key == "parent":
+                    name = "บิดามารดา"
+                elif key == "child":
+                    name = "บุตร"
+                elif key == "insurance":
+                    name = "ประกันชีวิต"
+                elif key == "fund":
+                    name = "กองทุน"
+                else:
+                    name = key
+                file.write(f' \t{name}: {value:,.2f}\n')
             file.write(f"ภาษีที่ต้องชำระ: {profile['tax']:,}\n")
 
         return filename
