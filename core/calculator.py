@@ -3,9 +3,6 @@
 # - มี calc_net_income(profile) คำนวณเงินได้สุทธิหลังหักค่าลดหย่อน
 # - เป็น pure function คืนค่าเป็น float/list และห้ามใช้ input, print
 
-# from io.storage import create_profile_input
-from core.deduction import calc_dection
-
 # profile  = {
 #         "id_card":    "1234567890123",   # str, 13 หลัก
 #         "name":       "สมชาย ใจดี",       # str
@@ -27,7 +24,7 @@ def calc_net_income(profile: dict) -> float:
     total_deduction = 0
     for deduction in profile["deductions"].values():
         total_deduction += deduction
-    net_income = (profile["income"]) - total_deduction
+    net_income = (profile["income"]) - (profile["expenses"]) - total_deduction
     return net_income
 
 def cal_tax(net_income: float) -> float:
@@ -49,9 +46,4 @@ def cal_tax(net_income: float) -> float:
     else:
         tax = 1265000 + (net_income - 5000000) * 0.35
     return tax
-
-# net_income = calc_net_income(profile)
-# tax = cal_tax(net_income)
-# print(net_income)
-# print(tax)
 
