@@ -4,26 +4,28 @@
 # - จัดเก็บข้อมูลตาม profile schema และรองรับข้อมูลไม่มีไฟล์/ไฟล์ว่าง/ข้อมูลเสียหาย
 # - ตรวจสอบเลขบัตรก่อนบันทึก และไม่รับ input หรือแสดงเมนูเอง
 ### ทำงานที่เกี่ยวข้องกับการจัดการไฟล์ ./data/taxpayer.txt เท่านั้น
-import json
 
-def create_profile_input(id_card="", name="", age="", status="", income=0, expenses=0, deductions=0, tax=0):
-    #สร้าง dict ของ profile ใช้งานร่วมกับหการรับตัวแปรของ menu1
-    profile = dict()
-    profile.setdefault("id_card", id_card)
-    profile.setdefault("name", name)
-    profile.setdefault("age", age)
-    profile.setdefault("status", status)
-    profile.setdefault("income", income)
-    profile.setdefault("expenses", expenses)
-    profile.setdefault("deductions", deductions)
-    profile.setdefault("tax", tax)
-    return profile
+HEAD_TABLE = ("id_card", "age", "status", "income", "expenses", "deductions", "tax", "name")
+DECTION_KEYS = ("spouse", "parent", "child", "insurance", "fund")
 
-def save_taxpayer(profile: dict) -> bool:
-    if profile:
+def head_table():
+    dection = f"{"spouse":<10}{"parent":<10}{"child":<10}{"insurance":<15}{"fund":<10}"
+    head = f"{"id_card":^25}| {"age":^5}| {"status":^10}| {"income":^15}| {"expenses":^15}|  {"deductions: "+dection:<60}|  {"tax":<15}| {"name"}"
+    print(head)
+    with open("./data/taxpayer.txt", "a") as file:
+        file.write(head+"\n")
+# head_table()
+
+def form_taxpayer(id_card="", name="", age="", status="", income=0, expenses=0, deductions=0, tax="waiting"):
+    #สร้าง str ของ profile ใช้งานร่วมกับหการรับตัวแปรของ menu1 เพื่อเตรียมบันทึกลงในระบบ
+    dection = f"{deductions["spouse"]:<10}{deductions["parent"]:<10}{deductions["child"]:<10}{deductions["insurance"]:<15}{deductions["fund"]:<10}"
+    taxpayer = f"{id_card:^25}| {age:^5}| {status:^10}| {income:^15}| {expenses:^15}|  {(" "*len("deductions: "))+dection:<60}|  {tax:<15}| {name}\n"
+    return taxpayer
+
+def save_taxpayer(taxpayer: dict) -> bool:
+    if taxpayer:
         with open("./data/taxpayer.txt", "a", encoding="utf-8") as file:
-            json.dump(profile, file, ensure_ascii=False)
-            file.write("\n")
+            file.write(taxpayer)
             return True
     return False
 
@@ -31,26 +33,21 @@ def load_all() -> list:
     #โหลดข้อมูลทั้งหมดของ profile
     with open("./data/taxpayer.txt", "r", encoding="utf-8") as file:
         data = file.readlines()
-        data = [d.strip() for d in data]
     return data
 
-def find_taxpayer(id_card) -> int:
+def find_taxpayer(id_card) -> tuple:
     #เช็คว่า id_card ที่ใส่เข้ามานั้นมีอยู่แล้วใน taxpayer.txt หรือมั้ย แล้ว return ค่า int
     data = load_all()
-    for line in range(1, len(data)+1):
-        try:
-            d = json.loads(data[line-1])
-            if d["id_card"] == id_card:
-                return line
-        except:
-            continue
+    for i in range(len(data)):
+        if data[i].find(id_card) != -1:
+            index = i
+            return (index, data[index])
     return None
 
 def create_profile(id_card) -> dict:
-    #สร้าง dict ของ profile id_card นั้น ๆ จาก taxpayer.txt แล้ว return profile type-data: dict
+    #สร้าง dict profile ของ taxpayer id_card นั้น ๆ จาก taxpayer.txt แล้ว return profile type-data: dict
     """ตัวอย่างค่าที่ต้องการให้ return profile = {
     "id_card":    "1234567890123",   # str, 13 หลัก
-    "name":       "สมชาย ใจดี",       # str
     "age":        35,                 # int
     "status":     "single",           # "single" / "married"
     "income":      400000.0           # float
@@ -62,28 +59,39 @@ def create_profile(id_card) -> dict:
         "fund":      50000.0,
     },
     "tax": 5000.0
+    "name":       "สมชาย ใจดี",       # str
     }"""
-    if find_taxpayer(id_card):
-        data = load_all()
-        line = find_taxpayer(id_card)
-        profile = json.loads(data[line-1]) #index = line-1
-        return profile
-    else:
-        return False
+    try:
+        index, data = find_taxpayer(id_card)
+        data = [x.strip() for x in data.split("|")]
+    except:
+        taxpayer_q = id_card
+        data = [x.strip() for x in taxpayer_q.split("|")] #ใช้ร่วมกับ quiz.py
+    finally:
+        profile = dict()
+        for i in range(len(HEAD_TABLE)):
+            if HEAD_TABLE[i]=="deductions":
+                dection = [x.strip() for x in data[i].split()]
+                deductions = dict()
+                for j in range(len(DECTION_KEYS)):
+                    deductions[DECTION_KEYS[j]] = float(dection[j])
+                profile.setdefault(HEAD_TABLE[i], deductions)
+            else:
+                try:
+                    profile.setdefault(HEAD_TABLE[i], float(data[i]))
+                except:
+                    profile.setdefault(HEAD_TABLE[i], data[i])
+    return profile
 
-
-def delete_taxpayer(id_card: str) -> bool:
+def delete_taxpayer(id_card) -> bool:
     data = load_all()
-    line = find_taxpayer(id_card)
-
-    if line:
-        with open("./data/taxpayer.txt", "w", encoding="utf-8") as file:
-            for i in range(len(data)):
-                if i != line-1: #index = line-1
-                    file.write(f"{data[i]}\n")
-            return True
-    else:
-        return False
+    index, data_index = find_taxpayer(id_card)
+    with open("./data/taxpayer.txt", "w", encoding="utf-8") as file:
+        for i in range(len(data)):
+            if i != index:
+                file.write(f"{data[i]}")
+        return True
+    return False
         
 def export_summary_profile(id_card: str):
     profile = create_profile(id_card)

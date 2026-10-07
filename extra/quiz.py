@@ -8,7 +8,7 @@
 
 from core.deduction import calc_dection
 from core.calculator import calc_net_income, cal_tax
-from io_utils.storage import create_profile_input
+from io_utils.storage import form_taxpayer, create_profile
 import random
 
 def quiz():
@@ -35,7 +35,8 @@ def quiz():
 
                 # calc_dection(spouse, status, children, parent,insurance,fund, income)
     deductions_q = calc_dection(spouse_q, status_q, children_q,parent_q,insurance_q,fund_q, income_q)
-    profile = create_profile_input(status=status_q, income=income_q, deductions=deductions_q)
+    taxpayer_q = form_taxpayer(status=status_q, income=income_q, deductions=deductions_q)
+    profile = create_profile(taxpayer_q)
     tax_ans = cal_tax(calc_net_income(profile))
     profile["tax"] = tax_ans
     return profile

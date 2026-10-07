@@ -1,7 +1,7 @@
 from core.calculator import calc_net_income, cal_tax 
 from core.deduction import calc_dection
-from io_utils.display import show_menu, input_text, input_num, input_menu, input_id, input_choice
-from io_utils.storage import save_taxpayer,create_profile_input, create_profile, find_taxpayer, delete_taxpayer, export_summary_profile
+from io_utils.display import show_menu, input_text, input_num, input_menu, input_id, input_choice, input_int
+from io_utils.storage import save_taxpayer, form_taxpayer, create_profile, find_taxpayer, delete_taxpayer, export_summary_profile, load_all
 from extra.quiz import quiz
 
 def menu1_add_taxpayer(id_card):
@@ -11,8 +11,12 @@ def menu1_add_taxpayer(id_card):
     age_input = input("กรอกอายุ: ")
     age = int(input_num(age_input))
 
-    status_input = input("กรอกสถานภาพ (single/married):")
-    status = input_choice(status_input, ["single","married"])
+    status_input = input("กรอกสถานภาพ (โสด/แต่งงาน): ")
+    status_th = input_choice(status_input, ["โสด","แต่งงาน"])
+    if status_th == "โสด":
+        status = "single"
+    else:
+        status = "married"
 
     income_input = input("กรอกรายได้ทั้งปี: ")
     income = input_num(income_input)
@@ -20,14 +24,19 @@ def menu1_add_taxpayer(id_card):
     expenses_input = input("กรอกค่าใช้จ่ายตามกฎหมาย: ")
     expenses = input_num(expenses_input)
 
-    spouse_input = input("คู่สมรสมีรายได้ใช่หรือไม่ (y=มีรายได้ / n=ไม่มีรายได้): ").strip().lower()
-    spouse = input_choice(spouse_input, ["y", "n"])
+    if status == "married":
+        spouse_input = input("คู่สมรสมีรายได้หรือไม่ (มี/ไมมี): ").strip().lower()
+        spouse = input_choice(spouse_input, ["มี", "ไม่มี"])
+        if spouse == "ไม่มี": spouse = True
+        else: spouse == False
+    else:
+        spouse = False
 
     children_input = input("จำนวนบุตรที่ชอบด้วยกฎหมาย: ")
-    children = int(input_num(children_input))
+    children = input_int(children_input)
 
     parent_input = input("จำนวนบิดามารดาที่ต้องเลี้ยงดู(อายุมากกว่า 60 มีเงินได้พึงประเมินรวมทั้งปี ไม่เกิน 30,000 บาท): ")
-    parent = int(input_num(parent_input))
+    parent = input_int(parent_input)
 
     insurance_input = input("ค่าเบี้ยประกัน (ถ้าไม่มีใส่ 0 ): ")
     insurance = input_num(insurance_input)
@@ -36,13 +45,11 @@ def menu1_add_taxpayer(id_card):
     fund = input_num(fund_input)
 
     deductions = calc_dection(spouse, status, children, parent, insurance, fund, income)
-    profile = create_profile_input(id_card, name, age, status, income, expenses, deductions)
-    net_income = calc_net_income(profile)
-    tax = cal_tax(net_income)
-    profile["tax"] = tax
-    isSave = save_taxpayer(profile)
+    taxpayer = form_taxpayer(id_card, name, age, status, income, expenses, deductions)
+    isSave = save_taxpayer(taxpayer)
     if isSave: print("เพิ่มข้อมูลภาษีเรียบร้อยเเล้ว\n")
-    else: print("Error!")
+    else: print("เพิ่มข้อมูลไม่สำเร็จ")
+    
     #เพิ่มข้อมูลในไฟล์ taxpayer.py
     ### หมายเหตุเข้าไปดู requirment ค่าที่ต้องการในไฟล์ taxpayer.txt
     #ใช้งานคู่กับ save taxpayer
@@ -51,14 +58,24 @@ def menu1_add_taxpayer(id_card):
 def menu2_calculate_tax(id_card):
     #หาค่าภาษีที่เคยมีใน taxpayer.txt แต่หากไม่เคยให้คำนวณภาษี และบันทึก tax ลงในไฟล์ taxpayer.txt
     profile = create_profile(id_card)
-    tax = cal_tax(profile["tax"])
-    print(f"จำนวนภาษีที่ต้องชำระ = {tax:,.2f} บาท\n")
+    if profile["tax"] == 'waiting':
+        net_income = calc_net_income(profile)
+        tax = cal_tax(net_income)
+
+        index, data_index = find_taxpayer(id_card)
+        taxpayer = data_index
+        taxpayer_caled = taxpayer.replace(f"{"waiting":<15}", f"{str(tax):<15}")
+        if delete_taxpayer(id_card):
+            save_taxpayer(taxpayer_caled)
 
 def menu3_create_id_txt(id_card):
+    profile = create_profile(id_card)
+    if profile["tax"] == 'waiting':
+        menu2_calculate_tax(id_card)
     filename = export_summary_profile(id_card)
 
     if filename is None:
-        print("ไม่พบเลขบัตรประจำตัวประชาชนนี้ในระบบ\n")
+        print("สร้างไฟล์ไม่สำเร็จ\n")
     else:
         print(f"สร้างไฟล์ {filename} เรียบร้อยเเล้ว\n")
     #ออกแบบ และสร้างไฟล์ .txt ของ id_card ที่ user กรอก โดยใช้ชื่อไฟล์ ex. 1-2345-67891-23-4.txt
@@ -68,7 +85,7 @@ def menu4_delete_taxpayer(id_card):
         print("ลบข้อมูลผู้เสียภาษีเรียบร้อยเเล้ว\n")
     else:
         print(delete_taxpayer(id_card))
-        print("ไม่พบข้อมูลผู้เสียภาษี ลบไม่สำเร็จ\n")
+        print("ลบไม่สำเร็จ\n")
     #ลบข้อมูล profile ของ id_card ที่ user กรอก
 
 def menu5_quiz():
@@ -76,7 +93,6 @@ def menu5_quiz():
     profile = quiz()
     ans_u = input("คำตอบ = ")
     ans = input_num(ans_u)
-
  
     print(f"เฉลยภาษีที่ต้องจ่าย {profile["tax"]} บาทส่วนต่าง {abs(profile["tax"]-ans)} บาทคลาดเคลื่อน {min(((abs(profile["tax"]-ans)/max(profile["tax"],1)*100)),100):.2f}%\n")
 
@@ -98,7 +114,9 @@ while True:
             id_card = input_id(id_card)
             if find_taxpayer(id_card):
                 menu2_calculate_tax(id_card)
-            
+                profile = create_profile(id_card)
+                tax = profile["tax"]
+                print(f"จำนวนภาษีที่ต้องชำระ = {tax:,.2f} บาท\n")
             else:
                 print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ โปรดเพิ่มข้อมูลผู้เสียภาษีก่อนคำนวณภาษี\n")
 
@@ -108,7 +126,7 @@ while True:
             if find_taxpayer(id_card):
                 menu3_create_id_txt(id_card)
             else:
-                print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ\n")
+                print("ไม่พบข้อมูลของเลขบัตรประจำตัวประชาชนนี้ในระบบ โปรดเพิ่มข้อมูลผู้เสียภาษีก่อนทำการสร้างไฟล์\n")
 
         elif choice == "4":
             id_card = input("กรอกเลขบัตรประชาชนของคุณ: ")
@@ -127,4 +145,4 @@ while True:
             print("โปรแกรมนี้เป็นการคำนวณคร่าวๆโปรดปรึกษาผู้เชี่ยวชาญ\n")
             break
 
-    isContinue = input_choice(input("continue program press 'y': "), ['y'])
+    press = input("หากต้องการดำเนินการต่อกดปุ่ม 'Enter' ที่แป้นพิมพ์")

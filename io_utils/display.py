@@ -29,7 +29,7 @@ def input_id(data: str) -> bool:
     data = data.strip()
     while not (data.isdigit() and len(data)==13):
         print("กรุณากรอกเลขบัตรประจำตัวประชาชนให้ถูกต้อง 13 หลัก")
-        data = input("กรอกเลขบัตรประจำตัวประชาชน:")
+        data = input("กรอกเลขบัตรประจำตัวประชาชน: ")
     id_card = f"{data[0]}-{data[1:5]}-{data[5:10]}-{data[10:12]}-{data[12]}"
     return id_card
     #เช็คว่า id_card ถูกต้องมั้ย รูปแบบที่ต้องการคือ id_card = "1234567891234" ถ้าไม่ให้กรอกใหม่จนกว่าจะถูก และ เก็บข้อมูลเป็น id_card = "1-2345-67891-23-4"
@@ -47,11 +47,27 @@ def input_text(data: str) -> str:
 def input_num(data: str) -> float:
     data = data.strip()
 
-    while not (data != "" and data.replace("-","", 1).isdigit() and float(data) >=0 ):
-        print("กรุณากรอกข้อมูลให้ถูกต้อง (เฉพาะตัวเลขเท่านั้น เช่น 17 หรือ 17.0)")
+    while True:
+        try:
+            value = float(data)
+            if value >= 0:
+                return value
+        except ValueError:
+            pass
+        print("กรอกตัวเลขที่ไม่ติดลบ เช่น 1234 หรือ 1234.50")  
         data = input("กรอกข้อมูลใหม่อีกครั้ง: ").strip()
-    return float(data)
     #ใข้เช็คข้อมูลใน profile ที่ต้องกรอกเป็น num ได้แก่ อายุ รายได้ เป้าหมายคือต้องเมคเซนส์ ไม่เอาแบบ สิบเจ็ด จะเอา ("17.0") และ return (data: float) ถ้าไม่ให้กรอกใหม่จนกว่าจะถูก
+
+def input_int(data: str) -> int:
+    data = data.strip()
+    while True:
+        try:
+            value = float(data)
+            if value >= 0 and value.is_integer():
+                return int(value)
+        except ValueError:
+            pass
+        print("กรอกจำนวนเต็ม เช่น 17 หรือ 17.0")
 
 def input_choice(data: str, valid_choice: list) -> str:
     data = data.strip()
