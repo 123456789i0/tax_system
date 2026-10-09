@@ -40,7 +40,7 @@ def menu1_add_taxpayer(id_card):
 
     insurance_input = input("ค่าเบี้ยประกัน (ถ้าไม่มีใส่ 0 ): ")
     insurance = input_num(insurance_input)
-
+    
     fund_input = input("เงินกองทุน (ถ้าไม่มีใส่ 0 ): ")
     fund = input_num(fund_input)
 
