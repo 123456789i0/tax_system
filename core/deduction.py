@@ -15,7 +15,7 @@ def calc_dection(spouse, status, children, parent, insurance, fund, income) -> d
     child = min(children,3)  * 30000
     cal_parent = min(parent,4) * 60000
     cal_insurance = min(insurance,100000)
-    cal_fund = min(fund , (income*12)*0.3)
+    cal_fund = min(fund , (income)*0.3)
 
     dection_dict = {"personal": personal,
                 "spouse": cal_spouse,
@@ -23,6 +23,7 @@ def calc_dection(spouse, status, children, parent, insurance, fund, income) -> d
                 "child": child,
                 "insurance": cal_insurance ,
                   "fund":      cal_fund,}
+    
     return dection_dict
 
 # profile  = {
