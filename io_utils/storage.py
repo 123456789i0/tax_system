@@ -106,7 +106,13 @@ def export_summary_profile(id_card: str):
             file.write(f"เลขบัตรประชาชน: {profile['id_card']}\n")
             file.write(f"ชื่อ-นามสกุล: {profile['name']}\n")
             file.write(f"อายุ: {profile['age']}\n")
-            file.write(f"สถานะ: {profile['status']}\n")
+            if profile['status'] == "married":
+                stautus = "สมรส"
+            elif profile['status'] == "single":
+                stautus = "โสด"
+            else:
+                stautus = profile['status']
+            file.write(f"สถานะ: {stautus}\n")
             file.write(f"รายได้: {profile['income']:,}\n")
             file.write(f"ค่าใช้จ่ายตามกฎหมาย: {profile['expenses']:,}\n")
             file.write("ค่าลดหย่อน: \n")
