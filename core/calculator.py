@@ -25,6 +25,7 @@ def calc_net_income(profile: dict) -> float:
     for deduction in profile["deductions"].values():
         total_deduction += deduction
     net_income = (profile["income"]) - (profile["expenses"]) - total_deduction
+    
     return net_income
 
 def cal_tax(net_income: float) -> float:
@@ -45,5 +46,6 @@ def cal_tax(net_income: float) -> float:
         tax = 365000 + (net_income - 2000000) * 0.30
     else:
         tax = 1265000 + (net_income - 5000000) * 0.35
+    
     return tax
 
