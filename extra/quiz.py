@@ -26,16 +26,15 @@ def quiz():
     insurance_q = int(random.randrange(10000,100000,1000))
     fund_q = random.randrange(10000,100000,1000)
     expenses_q = min((income_q*12)*0.5, 100000)
-    print(f"""เงินเดือน {income_q:,.2f} บาท
-    รายจ่าย {expenses_q} บาท
+    print(f"""    เงินเดือน {income_q:,.2f} บาท 
+    รายจ่าย {expenses_q:,.2f} บาท
     สถานะ {status_q} 
     ผู้ปกครอง(มีรายได้ไม่เกิน 30,000 บาท) {parent_q} คน
     คู่สมรสมีรายได้ {spouse_q} (False = ไม่มีรายได้ , True = มีรายได้) 
     บุตร {children_q} คน
-    ประกัน {insurance_q} บาท  
+    ประกัน {insurance_q:,.2f} บาท  
     กองทุน {fund_q:,.2f} บาท""")
-
-                # calc_dection(spouse, status, children, parent,insurance,fund, income)
+    
     deductions_q = calc_dection(spouse_q, status_q, children_q,parent_q,insurance_q,fund_q, income_q)
     taxpayer_q = form_taxpayer(status=status_q, income=income_q*12, deductions=deductions_q , expenses=expenses_q
     )
