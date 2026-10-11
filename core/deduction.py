@@ -13,7 +13,7 @@ def calc_dection(spouse, status, children, parent, insurance, fund, income) -> d
     if spouse == True:
         cal_spouse = 60000
     child = min(children,3)  * 30000
-    cal_parent = min(parent,4) * 60000
+    cal_parent = min(parent,2) * 30000
     cal_insurance = min(insurance,100000)
     cal_fund = min(fund , (income)*0.3)
 
