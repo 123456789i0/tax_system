@@ -26,7 +26,7 @@ def quiz():
     insurance_q = int(random.randrange(10000,100000,1000))
     fund_q = random.randrange(10000,100000,1000)
     expenses_q = min((income_q*12)*0.5, 100000)
-    print(f"""    เงินเดือน {income_q:,.2f} บาท 
+    print(f"""    รายได้ {income_q*12:,.2f} บาท 
     รายจ่าย {expenses_q:,.2f} บาท
     สถานะ {status_q} 
     ผู้ปกครอง(มีรายได้ไม่เกิน 30,000 บาท) {parent_q} คน
