@@ -22,7 +22,7 @@ def form_taxpayer(id_card="", name="", age="", status="", income=0, expenses=0, 
     taxpayer = f"{id_card:^25}| {age:^5}| {status:^10}| {income:^15}| {expenses:^15}|  {(" "*len("deductions: "))+dection:<60}|  {tax:<15}| {name}\n"
     return taxpayer
 
-def save_taxpayer(taxpayer: dict) -> bool:
+def save_taxpayer(taxpayer) -> bool:
     if taxpayer:
         with open("./data/taxpayer.txt", "a", encoding="utf-8") as file:
             file.write(taxpayer)
